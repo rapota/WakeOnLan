@@ -7,8 +7,9 @@ using System.Text;
 using System.Threading;
 using CommandLine;
 using NLog;
+using NLog.Fluent;
 
-namespace WakeOnLAN
+namespace WakeOnLan
 {
     class Program
     {
@@ -39,7 +40,7 @@ namespace WakeOnLAN
             }
             else
             {
-                logger.Error("Domain unhandled error. {0}", e.ExceptionObject);
+                logger.Error("Domain unhandled error: {0}", e.ExceptionObject);
             }
 
             LogManager.Flush();
@@ -52,42 +53,46 @@ namespace WakeOnLAN
 
             using (NestedDiagnosticsContext.Push("Parsing parameters."))
             {
-                StringBuilder sb = new StringBuilder(options.MacAddress);
-                sb.Replace(" ", string.Empty);
-                sb.Replace(":", string.Empty);
-                physicalAddress = PhysicalAddress.Parse(sb.ToString());
-                logger.Info("MAC adress: {0}", physicalAddress);
+                physicalAddress = ParseAddress(options.MacAddress);
+                if (physicalAddress == null)
+                {
+                    return;
+                }
 
                 if (options.Host == null)
                 {
                     ip = IPAddress.Broadcast;
-                    logger.Info("Using broadcast IP address: {0}", ip);
                 }
                 else
                 {
-                    if (IPAddress.TryParse(options.Host, out ip))
-                    {
-                        logger.Info("IP address: {0}", ip);
-                    }
-                    else
+                    if (!IPAddress.TryParse(options.Host, out ip))
                     {
                         IPAddress[] addresses = ResolveAddresses(options.Host);
-                        if (addresses != null && addresses.Length > 0)
+                        if (addresses == null || addresses.Length == 0)
                         {
-                            ip = addresses[0];
-                            logger.Info("Host name '{0}' resolved as IP address: {1}", options.Host, ip);
-                        }
-                        else
-                        {
-                            logger.Error("Failed to resolve host name '{0}' with DNS.", options.Host);
                             return;
                         }
+
+                        ip = addresses[0];
                     }
                 }
+            }
 
-                logger.Info("Port number: {0}", options.Port);
-                logger.Info("Repeates: {0}", options.Repeate);
-                logger.Info("Delay: {0}", options.Delay);
+            if (logger.IsInfoEnabled)
+            {
+                StringBuilder message = new StringBuilder();
+                message.AppendLine("Initial parameters:");
+                message.AppendFormat("MAC address: {0}", physicalAddress);
+                message.AppendLine();
+                message.AppendFormat("IP address: {0}", ip);
+                message.AppendLine();
+                message.AppendFormat("Port number: {0}", options.Port);
+                message.AppendLine();
+                message.AppendFormat("Repeates: {0}", options.Repeate);
+                message.AppendLine();
+                message.AppendFormat("Delay: {0}", options.Delay);
+
+                logger.Info(message.ToString());
             }
 
             using (NestedDiagnosticsContext.Push("Sending packages."))
@@ -96,16 +101,39 @@ namespace WakeOnLAN
                 byte[] package = CreatePackage(physicalAddress.GetAddressBytes());
                 IPEndPoint endPoint = new IPEndPoint(ip, options.Port);
 
-                for (int i = 0; i < options.Repeate; i++)
+                try
                 {
-                    logger.Info("Sending package #{0}...", i + 1);
-                    udpClient.Send(package, package.Length, endPoint);
-
-                    if ((i + 1) < options.Repeate)
+                    for (int i = 0; i < options.Repeate; i++)
                     {
-                        Thread.Sleep(options.Delay);
+                        udpClient.Send(package, package.Length, endPoint);
+                        logger.Info("The package #{0} was send.", i + 1);
+
+                        if ((i + 1) < options.Repeate)
+                        {
+                            Thread.Sleep(options.Delay);
+                        }
                     }
                 }
+                catch (SocketException ex)
+                {
+                    logger.Error(ex, "Faile dto send pakage.");
+                }
+            }
+        }
+
+        private static PhysicalAddress ParseAddress(string macAddress)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder(macAddress);
+                sb.Replace(" ", string.Empty);
+                sb.Replace(":", string.Empty);
+                return PhysicalAddress.Parse(sb.ToString());
+            }
+            catch (FormatException ex)
+            {
+                logger.Error(ex, "Invalid MAC adress.");
+                return null;
             }
         }
 

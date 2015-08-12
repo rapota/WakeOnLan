@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using CommandLine.Text;
 
-namespace WakeOnLAN
+namespace WakeOnLan
 {
     public class Options
     {
