@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using CommandLine;
 using NLog;
-using NLog.Fluent;
 
 namespace WakeOnLan
 {
@@ -19,15 +18,16 @@ namespace WakeOnLan
         {
             AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
 
-            Options options = new Options();
-            if (!Parser.Default.ParseArguments(args, options))
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(Run)
+                .WithNotParsed(HandleParseError);
+        }
+
+        private static void HandleParseError(IEnumerable<Error> errs)
+        {
+            foreach (Error error in errs)
             {
-                string help = options.GetUsage();
-                logger.Error(help);
-            }
-            else
-            {
-                Run(options);
+                logger.Error(error);
             }
         }
 

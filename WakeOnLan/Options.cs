@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using CommandLine.Text;
 
 namespace WakeOnLan
 {
@@ -11,19 +10,13 @@ namespace WakeOnLan
         [Option('n', "host", HelpText = "Host name or IP address.")]
         public string Host { get; set; }
 
-        [Option('p', "port", DefaultValue = 9, HelpText = "Port number.")]
+        [Option('p', "port", Default = 9, HelpText = "Port number.")]
         public int Port { get; set; }
 
-        [Option('r', "repeate", DefaultValue = 1, HelpText = "Repeat request N times.")]
+        [Option('r', "repeate", Default = 1, HelpText = "Repeat request N times.")]
         public int Repeate { get; set; }
 
-        [Option('d', "delay", DefaultValue = 1000, HelpText = "Delay between requests.")]
+        [Option('d', "delay", Default = 1000, HelpText = "Delay between requests.")]
         public int Delay { get; set; }
-
-        [HelpOption]
-        public string GetUsage()
-        {
-            return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
-        }
     }
 }
