@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WakeOnLan", "WakeOnLan\WakeOnLan.csproj", "{D72E7E17-9172-40CB-877C-5D42A0C0E131}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WakeOnLan.Standard", "WakeOnLan.Standard\WakeOnLan.Standard.csproj", "{DBF27E45-B279-4769-9A40-B54A1E8B7145}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WakeOnLan.Standard", "WakeOnLan.Standard\WakeOnLan.Standard.csproj", "{DBF27E45-B279-4769-9A40-B54A1E8B7145}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WakeOnLan.Core", "WakeOnLan.Core\WakeOnLan.Core.csproj", "{80E14F66-934E-4615-BFEA-4E5800F24A44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E14F66-934E-4615-BFEA-4E5800F24A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E14F66-934E-4615-BFEA-4E5800F24A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E14F66-934E-4615-BFEA-4E5800F24A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E14F66-934E-4615-BFEA-4E5800F24A44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

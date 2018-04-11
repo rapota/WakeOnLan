@@ -4,7 +4,7 @@ using CommandLine;
 using NLog;
 using WakeOnLan.Standard;
 
-namespace WakeOnLan
+namespace WakeOnLan.Core
 {
     class Program
     {
