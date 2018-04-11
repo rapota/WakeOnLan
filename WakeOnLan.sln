@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WakeOnLan", "WakeOnLan\WakeOnLan.csproj", "{D72E7E17-9172-40CB-877C-5D42A0C0E131}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WakeOnLan.Standard", "WakeOnLan.Standard\WakeOnLan.Standard.csproj", "{DBF27E45-B279-4769-9A40-B54A1E8B7145}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{D72E7E17-9172-40CB-877C-5D42A0C0E131}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D72E7E17-9172-40CB-877C-5D42A0C0E131}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D72E7E17-9172-40CB-877C-5D42A0C0E131}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF27E45-B279-4769-9A40-B54A1E8B7145}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62306C0F-ADD6-4AF5-8105-46AE3621C4A2}
 	EndGlobalSection
 EndGlobal
