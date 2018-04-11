@@ -12,6 +12,9 @@ namespace WakeOnLan
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Starting.");
+            logger.Error("Starting.");
+
             AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
 
             Parser.Default.ParseArguments<Options>(args)

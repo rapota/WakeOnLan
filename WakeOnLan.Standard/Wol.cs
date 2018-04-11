@@ -92,9 +92,10 @@ namespace WakeOnLan.Standard
         {
             try
             {
-                StringBuilder sb = new StringBuilder(macAddress);
-                sb.Replace(" ", string.Empty);
-                sb.Replace(":", string.Empty);
+                StringBuilder sb = new StringBuilder(macAddress)
+                    .Replace(" ", string.Empty)
+                    .Replace(":", string.Empty)
+                    .Replace("-", string.Empty);
                 return PhysicalAddress.Parse(sb.ToString());
             }
             catch (FormatException ex)
