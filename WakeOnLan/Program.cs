@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CommandLine;
 using NLog;
-using WakeOnLan.Standard;
 
 namespace WakeOnLan
 {

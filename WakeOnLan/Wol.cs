@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using NLog;
 
-namespace WakeOnLan.Standard
+namespace WakeOnLan
 {
     public static class Wol
     {
