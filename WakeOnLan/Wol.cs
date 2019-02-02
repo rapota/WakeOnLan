@@ -5,20 +5,21 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using NLog;
+using Serilog;
+using Serilog.Events;
 
 namespace WakeOnLan
 {
     public static class Wol
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger logger = Log.ForContext(typeof(Wol));
 
         public static void Run(Options options)
         {
             PhysicalAddress physicalAddress;
             IPAddress ip;
 
-            using (NestedDiagnosticsContext.Push("Parsing parameters."))
+            //TODO: using (NestedDiagnosticsContext.Push("Parsing parameters."))
             {
                 physicalAddress = ParseAddress(options.MacAddress);
                 if (physicalAddress == null)
@@ -45,7 +46,7 @@ namespace WakeOnLan
                 }
             }
 
-            if (logger.IsInfoEnabled)
+            if (logger.IsEnabled(LogEventLevel.Information))
             {
                 StringBuilder message = new StringBuilder();
                 message.AppendLine("Initial parameters:");
@@ -59,10 +60,10 @@ namespace WakeOnLan
                 message.AppendLine();
                 message.AppendFormat("Delay: {0}", options.Delay);
 
-                logger.Info(message.ToString());
+                logger.Information(message.ToString());
             }
 
-            using (NestedDiagnosticsContext.Push("Sending packages."))
+            //TODO: using (NestedDiagnosticsContext.Push("Sending packages."))
             using (UdpClient udpClient = new UdpClient())
             {
                 byte[] package = CreatePackage(physicalAddress.GetAddressBytes());
@@ -73,7 +74,7 @@ namespace WakeOnLan
                     for (int i = 0; i < options.Repeate; i++)
                     {
                         udpClient.Send(package, package.Length, endPoint);
-                        logger.Info("The package #{0} was send.", i + 1);
+                        logger.Information("The package #{0} was send.", i + 1);
 
                         if ((i + 1) < options.Repeate)
                         {

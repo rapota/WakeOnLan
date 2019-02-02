@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommandLine;
-using NLog;
+using Serilog;
 
 namespace WakeOnLan
 {
     class Program
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting.");
-            logger.Error("Starting.");
+            Console.WriteLine("Starting...");
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+            ILogger logger = Log.ForContext(typeof(Program));
+            logger.Information("Starting.");
 
             AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
 
@@ -25,7 +29,7 @@ namespace WakeOnLan
         {
             foreach (Error error in errs)
             {
-                logger.Error(error);
+                Log.Logger.Error(error.ToString());
             }
         }
 
@@ -33,14 +37,12 @@ namespace WakeOnLan
         {
             if (e.ExceptionObject is Exception ex)
             {
-                logger.Error(ex, "Domain unhandled exception.");
+                Log.Logger.Error(ex, "Domain unhandled exception.");
             }
             else
             {
-                logger.Error("Domain unhandled error: {0}", e.ExceptionObject);
+                Log.Logger.Error("Domain unhandled error: {0}", e.ExceptionObject);
             }
-
-            LogManager.Flush();
         }
     }
 }
