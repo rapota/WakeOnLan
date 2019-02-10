@@ -14,7 +14,6 @@ namespace WakeOnLan
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.File("logs\\wol.txt")
                 .CreateLogger();
             ILogger logger = Log.ForContext(typeof(Program));
 
