@@ -1,38 +1,69 @@
 ﻿using System;
-using System.Collections.Generic;
-using CommandLine;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace WakeOnLan
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Starting...");
-
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
             ILogger logger = Log.ForContext(typeof(Program));
+            try
+            {
+                AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
 
-            logger.Information("Application started.");
-            AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
+                Options options = ParseOptions(args);
+                if (options == null)
+                {
+                    logger.Fatal("Invalid command line.");
+                    return;
+                }
 
-            Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(Wol.Run)
-                .WithNotParsed(HandleParseError);
-            logger.Information("Application stoped.");
+                logger.Information("Application started.");
+
+                await Wol.RunAsync(options);
+                logger.Information("Application stopped.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
-        private static void HandleParseError(IEnumerable<Error> errs)
+        private static Options ParseOptions(string[] args)
         {
-            Log.Logger.Error("Parser errors:");
-            foreach (Error error in errs)
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .Build();
+
+            Options options = configuration.Get<Options>();
+            if (options?.MacAddress == null)
             {
-                Log.Logger.Error(error.ToString());
+                return null;
             }
+
+            if (options.Port == 0)
+            {
+                options.Port = 9;
+            }
+
+            if (options.Repeate == 0)
+            {
+                options.Repeate = 1;
+            }
+
+            if (options.Delay == 0)
+            {
+                options.Delay = 1000;
+            }
+
+            return options;
         }
 
         private static void OnCurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
 
@@ -14,7 +15,7 @@ namespace WakeOnLan
     {
         private static readonly ILogger logger = Log.ForContext(typeof(Wol));
 
-        public static void Run(Options options)
+        public static async Task RunAsync(Options options)
         {
             PhysicalAddress physicalAddress;
             IPAddress ip;
@@ -73,7 +74,7 @@ namespace WakeOnLan
                 {
                     for (int i = 0; i < options.Repeate; i++)
                     {
-                        udpClient.Send(package, package.Length, endPoint);
+                        await udpClient.SendAsync(package, package.Length, endPoint);
                         logger.Information("The package #{0} was send.", i + 1);
 
                         if ((i + 1) < options.Repeate)
